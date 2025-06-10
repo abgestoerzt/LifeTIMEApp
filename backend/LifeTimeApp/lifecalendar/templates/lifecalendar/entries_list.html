@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entries List</title>
+    <link rel="stylesheet" href="{% static 'lifecalendar/style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Life Calendar Entries</h1>
+    </header>
+    
+    <main>
+        {% block content %}
+        <!-- Content goes here -->
+         {% if calender_entries_list %}
+        <ul>
+            {% for entry in calender_entries_list %}
+                <li>
+                    <strong>{{ entry.name }}</strong> - {{ entry.start_date }} - {{ entry.end_date }} <br>
+                    {{ entry.description }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No entries found.</p>
+        {% endif %}
+        {% endblock %}
+    
+    </main>
+
+    <footer>
+        <p>&copy; {% now "Y" %} LifeTime App</p>
+    </footer>
+</body>
+</html>

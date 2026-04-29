@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Auswertung{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<h1 class="mb-1">Eure Auswertung</h1>
+<p class="text-muted mb-4">{{ partner_a.username }} &amp; {{ partner_b.username }}</p>
+
+{% if gesamtverteilung %}
+<div class="row g-4 mb-5">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h5>🧠 Denken &amp; Organisieren</h5>
+        <canvas id="chartManagement" height="200"></canvas>
+        <div class="d-flex justify-content-around mt-3 text-center">
+          <div><div class="fw-bold fs-4">{{ gesamtverteilung.management.partner_a }}%</div><small>{{ partner_a.username }}</small></div>
+          <div><div class="fw-bold fs-4">{{ gesamtverteilung.management.partner_b }}%</div><small>{{ partner_b.username }}</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-body p-4">
+        <h5>🙌 Ausführen</h5>
+        <canvas id="chartAusfuehrung" height="200"></canvas>
+        <div class="d-flex justify-content-around mt-3 text-center">
+          <div><div class="fw-bold fs-4">{{ gesamtverteilung.ausfuehrung.partner_a }}%</div><small>{{ partner_a.username }}</small></div>
+          <div><div class="fw-bold fs-4">{{ gesamtverteilung.ausfuehrung.partner_b }}%</div><small>{{ partner_b.username }}</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if luecken %}
+<h4 class="mb-3">Auffälligkeiten</h4>
+<div class="table-responsive mb-5">
+  <table class="table table-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>Aufgabe</th>
+        <th>{{ partner_a.username }}</th>
+        <th>{{ partner_b.username }}</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for l in luecken %}
+      <tr>
+        <td>{{ l.aufgabe }}</td>
+        <td><small>{{ l.antwort_a.get_management_display }}</small></td>
+        <td><small>{{ l.antwort_b.get_management_display }}</small></td>
+        <td>
+          {% if l.markierung == "konflikt" %}<span class="badge bg-warning text-dark">⚠️ Widerspruch</span>
+          {% elif l.markierung == "unsichtbar" %}<span class="badge bg-info text-dark">👁️ Unsichtbar</span>
+          {% elif l.markierung == "luecke" %}<span class="badge bg-secondary">❓ Lücke</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+
+<div class="text-center mt-4">
+  <a href="{% url 'plan:bearbeiten' %}" class="btn btn-dark btn-lg">Weiter: Aufgaben neu verteilen →</a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function donut(id, a, b, labelA, labelB) {
+    new Chart(document.getElementById(id), {
+      type: 'doughnut',
+      data: {
+        labels: [labelA, labelB],
+        datasets: [{ data: [a, b], backgroundColor: ['#212529', '#adb5bd'] }]
+      },
+      options: { plugins: { legend: { position: 'bottom' } }, cutout: '65%' }
+    });
+  }
+  {% if gesamtverteilung %}
+  donut('chartManagement',
+    {{ gesamtverteilung.management.partner_a }},
+    {{ gesamtverteilung.management.partner_b }},
+    '{{ partner_a.username }}', '{{ partner_b.username }}'
+  );
+  donut('chartAusfuehrung',
+    {{ gesamtverteilung.ausfuehrung.partner_a }},
+    {{ gesamtverteilung.ausfuehrung.partner_b }},
+    '{{ partner_a.username }}', '{{ partner_b.username }}'
+  );
+  {% endif %}
+</script>
+{% endblock %}

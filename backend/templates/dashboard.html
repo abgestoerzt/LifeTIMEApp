@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<h1 class="mb-4">Hallo, {{ user.username }}!</h1>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h5 class="card-title">Euer Paar</h5>
+        {% if paar_session %}
+          <p class="text-muted">{{ paar_session }}</p>
+          <p>Status: <strong>{{ paar_session.get_status_display }}</strong></p>
+          {% if paar_session.status == "offen" %}
+            <p>Einladecode: <code>{{ paar_session.invite_code }}</code></p>
+          {% elif paar_session.status == "test_laeuft" %}
+            <a href="{% url 'survey:start' %}" class="btn btn-dark">Test fortsetzen</a>
+          {% elif paar_session.status == "beide_fertig" %}
+            <a href="{% url 'results:auswertung' %}" class="btn btn-dark">Auswertung ansehen</a>
+          {% elif paar_session.status == "plan_aktiv" %}
+            <a href="{% url 'checkins:start' %}" class="btn btn-dark">Wöchentlicher Check-in</a>
+          {% endif %}
+        {% else %}
+          <p class="text-muted">Ihr seid noch kein Paar.</p>
+          <a href="{% url 'pairs:erstellen' %}" class="btn btn-dark me-2">Paar erstellen</a>
+          <a href="{% url 'pairs:beitreten' %}" class="btn btn-outline-dark">Einladecode eingeben</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

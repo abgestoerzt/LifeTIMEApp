@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Wöchentlicher Check-in{% endblock %}
+{% block content %}
+<h1 class="mb-1">Wöchentlicher Check-in</h1>
+<p class="text-muted mb-4">Woche vom {{ woche|date:"d.m.Y" }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  {% for umv in aufgaben %}
+  <div class="card border-0 shadow-sm mb-2">
+    <div class="card-body py-3 px-4">
+      <div class="row align-items-center">
+        <div class="col-md-6 fw-semibold">{{ umv.aufgabe.bezeichnung }}</div>
+        <div class="col-md-6">
+          <div class="btn-group w-100" role="group">
+            <input type="radio" class="btn-check" name="aufgabe_{{ umv.aufgabe.pk }}" id="ja_{{ umv.aufgabe.pk }}" value="ja">
+            <label class="btn btn-outline-success btn-sm" for="ja_{{ umv.aufgabe.pk }}">✅ Ja</label>
+            <input type="radio" class="btn-check" name="aufgabe_{{ umv.aufgabe.pk }}" id="tw_{{ umv.aufgabe.pk }}" value="teilweise">
+            <label class="btn btn-outline-warning btn-sm" for="tw_{{ umv.aufgabe.pk }}">⚠️ Teilweise</label>
+            <input type="radio" class="btn-check" name="aufgabe_{{ umv.aufgabe.pk }}" id="nein_{{ umv.aufgabe.pk }}" value="nein">
+            <label class="btn btn-outline-danger btn-sm" for="nein_{{ umv.aufgabe.pk }}">❌ Nein</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div class="text-center mt-4">
+    <button type="submit" class="btn btn-dark btn-lg">Check-in abschließen</button>
+  </div>
+</form>
+{% endblock %}

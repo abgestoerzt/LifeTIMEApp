@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Check-in Verlauf{% endblock %}
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+{% endblock %}
+{% block content %}
+<h1 class="mb-4">Verlauf</h1>
+
+{% if verlauf %}
+<canvas id="verlaufChart" height="120"></canvas>
+{% else %}
+<p class="text-muted">Noch keine Check-in Daten vorhanden.</p>
+{% endif %}
+
+{% endblock %}
+{% block extra_js %}
+{% if verlauf %}
+<script>
+  const labels = [{% for v in verlauf %}"KW {{ v.woche|date:'W' }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const data = [{% for v in verlauf %}{% if v.anzahl_gesamt %}{{ v.anzahl_ja|floatformat:0 }}{% else %}0{% endif %}{% if not forloop.last %},{% endif %}{% endfor %}];
+  new Chart(document.getElementById('verlaufChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Aufgaben erledigt (Ja)',
+        data: data,
+        backgroundColor: '#212529'
+      }]
+    },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Paar erstellen{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card border-0 shadow-sm">
+      <div class="card-body p-4">
+        <h2 class="mb-1">Paar erstellen</h2>
+        <p class="text-muted mb-4">Wähle aus, welche Lebensbereiche für euch relevant sind.</p>
+        <form method="post">
+          {% csrf_token %}
+          <div class="form-check mb-3">
+            {{ form.setup_kinder }}
+            <label class="form-check-label" for="{{ form.setup_kinder.id_for_label }}">
+              {{ form.setup_kinder.label }}
+            </label>
+          </div>
+          <div class="form-check mb-4">
+            {{ form.setup_haustiere }}
+            <label class="form-check-label" for="{{ form.setup_haustiere.id_for_label }}">
+              {{ form.setup_haustiere.label }}
+            </label>
+          </div>
+          <button type="submit" class="btn btn-dark w-100">Paar erstellen & Einladecode generieren</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 # Konzept: Mental Load App für Paare
 
-> **Status:** Entwurf – zur gemeinsamen Besprechung
+> **Status:** Finalisiert ✓
 
 ---
 
@@ -18,9 +18,10 @@ Eine Web-App, die Paaren ermöglicht:
 
 1. **Den Mental Load Test getrennt voneinander durchzuführen** – jede:r beantwortet für sich, ohne die Antworten der anderen Person zu sehen
 2. **Eine gemeinsame Auswertung zu sehen** – visualisierte Gegenüberstellung: Wer trägt wie viel Last in welchen Bereichen?
-3. **Aufgaben gemeinsam neu zu verteilen** – einen Umverteilungsplan erstellen und festhalten
+3. **Aufgaben gemeinsam neu zu verteilen und den Plan gemeinsam zu unterzeichnen**
+4. **Wöchentliche Check-ins durchführen** – regelmäßig prüfen, ob der neue Plan im Alltag funktioniert
 
-Nicht: eine Schuldzuweisung. **Ja:** ein Gesprächseinstieg mit konkreter Grundlage.
+Nicht: eine Schuldzuweisung. **Ja:** ein Gesprächseinstieg mit konkreter Grundlage — und ein Werkzeug für langfristige Veränderung.
 
 ---
 
@@ -45,182 +46,283 @@ Diese Trennung ist der Kern: jemand kann eine Aufgabe *ausführen*, ohne sie jem
 - Jemand anderes / extern
 - Trifft auf uns nicht zu
 
-### 3.3 Kategorien und Aufgaben (@home)
+### 3.3 Aufgabenkatalog
 
-> **Offene Frage:** Verwenden wir den exakten Aufgabenkatalog von Equal Care Day oder entwickeln wir einen eigenen? Lizenzfrage klären.
+Basis: Aufgabenkatalog angelehnt an Equal Care Day @home — frei adaptiert.
+Zusätzlich können **Paare eigene Aufgaben** hinzufügen, die in ihrem Alltag relevant sind.
 
-Vorgeschlagene Kategorien (angelehnt an den ECD-Test):
+#### Kategorien und Beispielaufgaben
 
 | Kategorie | Beispielaufgaben |
 |---|---|
-| **Ernährung** | Mahlzeiten planen, Einkaufsliste, Kochen, Vorräte prüfen |
-| **Haushalt** | Putzen, Aufräumen, Müll, Renovierungen beauftragen |
-| **Wäsche & Kleidung** | Waschen, Bügeln, Kleidung einkaufen |
-| **Finanzen** | Rechnungen, Budget, Steuern, Versicherungen |
-| **Wohnen & Technik** | Reparaturen, Geräte warten, Behördengänge |
-| **Gesundheit** | Arzttermine, Medikamente, Vorsorge |
-| **Soziales** | Geburtstage, Geschenke, Kontakt zu Familie/Freunden |
-| **Freizeit & Urlaub** | Planung, Buchungen, Aktivitäten |
-| *(optional)* **Kinderbetreuung** | Schule, Arzt, Aktivitäten der Kinder |
-| *(optional)* **Haustiere** | Füttern, Tierarzt, Pflege |
+| **Ernährung** | Wochenmenü planen, Einkaufsliste schreiben, Einkaufen, Kochen, Vorräte prüfen, Reste verwerten |
+| **Haushalt** | Putzplan, Staubsaugen, Bad putzen, Küche putzen, Müll, Wohnung aufräumen, Handwerker beauftragen |
+| **Wäsche & Kleidung** | Wäsche waschen, Wäsche aufhängen/einräumen, Bügeln, Saisonkleidung wechseln, Kleidung nachkaufen |
+| **Finanzen** | Rechnungen bezahlen, Haushaltsbuch/Budget, Steuererklärung, Versicherungen prüfen, Sparen/Anlegen |
+| **Wohnen & Technik** | Kleine Reparaturen, Geräte warten, Behördengänge, Post bearbeiten, Abonnements verwalten |
+| **Gesundheit** | Arzttermine organisieren, Medikamente, Vorsorgeuntersuchungen, Sport/Bewegung einplanen |
+| **Soziales** | Geburtstage im Blick haben, Geschenke, Kontakt zu Familie/Freunden pflegen, Einladungen |
+| **Freizeit & Urlaub** | Aktivitäten planen, Urlaub buchen, Dates/Ausflüge organisieren |
+| *(optional)* **Kinderbetreuung** | Kita/Schule, Arzttermine Kinder, Aktivitäten, Schulzeug, Elterngespräche |
+| *(optional)* **Haustiere** | Füttern, Tierarzt, Pflege, Betreuung bei Abwesenheit |
+| **Eigene Aufgaben** | Frei definierbar durch das Paar |
 
-Geschätzte Aufgabenzahl: **~30–50 Aufgaben** gesamt (konfigurierbar).
+**Optionale Kategorien** (Kinderbetreuung, Haustiere) werden beim Setup des Tests aktiviert/deaktiviert.
 
-### 3.4 Testdauer
+Geschätzte Aufgabenzahl: **~35–45 Aufgaben** + individuelle Ergänzungen.
 
-Ca. 10–15 Minuten. Man muss den Test nicht in einem Stück fertigmachen (Fortschritt wird gespeichert).
+### 3.4 Testdauer und Fortschritt
 
----
-
-## 4. User Flow
-
-```
-[Person A]                          [Person B]
-    |                                    |
-Registrierung                    Registrierung
-    |                                    |
-Paar erstellen ──── Einladecode ────> Paar beitreten
-    |                                    |
-Test unabhängig                  Test unabhängig
-durchführen                      durchführen
-    |                                    |
-    └──────── Beide fertig? ─────────────┘
-                    |
-             Gemeinsame Auswertung
-                    |
-             Umverteilungsplan
-                    |
-                Speichern / Drucken
-```
-
-### Details
-
-- Solange einer noch nicht fertig ist, bleibt die Auswertung gesperrt
-- Keine Person sieht die Antworten der anderen, bevor beide fertig sind
-- Der Einladecode ist zeitlich begrenzt (z.B. 7 Tage)
+Ca. 10–15 Minuten. Fortschritt wird gespeichert — der Test muss nicht in einem Stück abgeschlossen werden.
 
 ---
 
-## 5. Auswertung – Visualisierung
+## 4. Vollständiger User Flow
 
-### 5.1 Übersicht (Dashboard)
+```
+[Person A]                              [Person B]
+    |                                        |
+Registrierung (Account)             Registrierung (Account)
+    |                                        |
+Paar erstellen                       Einladecode eingeben
+(erhält Einladecode, 7 Tage gültig)       |
+    |                                   Paar beigetreten
+    |                                        |
+Setup: Optionale Kategorien wählen          |
+(Kinder? Haustiere?)                        |
+    |                                        |
+    ├──────────── Test-Phase ────────────────┤
+    |                                        |
+Test unabhängig durchführen         Test unabhängig durchführen
+(Antworten der anderen Person           (Antworten der anderen Person
+ nicht sichtbar)                         nicht sichtbar)
+    |                                        |
+    └──────────── Beide fertig? ─────────────┘
+                        |
+              ┌─ Gemeinsame Auswertung ─┐
+              │  - Gesamtverteilung     │
+              │  - Kategorien-Charts    │
+              │  - Wahrnehmungslücken   │
+              └─────────────────────────┘
+                        |
+              ┌─ Umverteilungsplan ─────┐
+              │  - Neue Zuweisung       │
+              │    je Aufgabe           │
+              │  - Person A signiert ✓  │
+              │  - Person B signiert ✓  │
+              └─────────────────────────┘
+                        |
+              ┌─ Wöchentliche Check-ins ┐
+              │  (ab jetzt, dauerhaft)  │
+              └─────────────────────────┘
+```
 
-- **Gesamtverteilung:** Wer trägt wie viel Mental Load (in %) gesamt?
-- Aufgeteilt nach: Denken vs. Ausführen
+### Flow-Details
+
+- Solange einer noch nicht fertig ist: Auswertung gesperrt, Status sichtbar ("Partner:in noch nicht fertig")
+- Einladecode: 7 Tage gültig, einmalig verwendbar
+- Kategorien-Setup macht nur Person A (die das Paar erstellt)
+
+---
+
+## 5. Auswertung
+
+### 5.1 Gesamtübersicht
+
+- **Donut-Chart oder Balken:** Gesamtanteil Mental Load — Person A vs. Person B
+- Aufgeteilt: Denken/Managen vs. Ausführen (zwei separate Werte)
+- Highlight: "Unsichtbare Arbeit" = hoher Management-Anteil bei einer Person
 
 ### 5.2 Kategorie-Ansicht
 
-- Pro Kategorie: Balkendiagramm oder Heatmap
-- Farben: Person A / Person B / Beide / Extern
+- Pro Kategorie: Balkendiagramm (Person A / Person B / Beide / Extern)
+- Sortiert nach Ungleichgewicht — die schiefstes Kategorien oben
 
-### 5.3 Aufgaben-Detailansicht
+### 5.3 Aufgaben-Detailansicht (Wahrnehmungslücken)
 
-- Tabellarisch: jede Aufgabe, Antwort A, Antwort B, Übereinstimmung/Unterschied
-- Besonders markiert: **Wahrnehmungslücken** (A sagt "Ich", B sagt auch "Ich" → Konfliktpotenzial) oder (A sagt "Ich", B sagt "Beide" → Unsichtbare Arbeit)
+Tabellarisch: jede Aufgabe, Antwort A, Antwort B, Bewertung
 
----
-
-## 6. Umverteilungsplan (Schritt 2)
-
-Nach der Auswertung können beide gemeinsam festlegen:
-
-- Wer übernimmt eine Aufgabe künftig (Management + Ausführung)?
-- Optionen: Ich / Partner:in / Beide / Extern / Abschaffen
-
-Der Plan wird gespeichert und kann exportiert / ausgedruckt werden.
-
-> **Offene Frage:** Soll der Umverteilungsplan von beiden bestätigt werden müssen ("Sign-off")? Oder reicht ein gemeinsamer Entwurf?
+Besonders markiert:
+| Muster | Bedeutung | Markierung |
+|---|---|---|
+| A: "Ich" — B: "Ich" | Beide denken sie machen es | ⚠️ Konflikt |
+| A: "Ich" — B: "Beide" | A's Arbeit wird nicht gesehen | 👁️ Unsichtbar |
+| A: "Partner:in" — B: "Partner:in" | Niemand macht es wirklich | ❓ Lücke |
+| A: "Ich" — B: "Partner:in" | Volle Übereinstimmung | ✓ |
 
 ---
 
-## 7. Technisches Konzept
+## 6. Umverteilungsplan
 
-### 7.1 Stack (wie besprochen: reines Django)
+### Wie es funktioniert
+
+Nach der Auswertung erstellen beide gemeinsam einen neuen Verteilungsplan:
+- Für jede Aufgabe: neue Zuweisung für Management + Ausführung
+- Optionen: Person A / Person B / Beide / Extern / Aufgabe abschaffen
+
+### Sign-off / Unterzeichnung
+
+Beide Partner:innen müssen den Plan explizit **bestätigen** ("Ich stimme diesem Plan zu"):
+- Erst wenn beide unterzeichnet haben, gilt der Plan als aktiv
+- Unterzeichnung wird mit Timestamp gespeichert
+- Plan kann danach bearbeitet werden → löst neuen Sign-off-Prozess aus
+
+### Export
+
+- Druckansicht / PDF-Export des Plans als gemeinsames Dokument
+
+---
+
+## 7. Wöchentliche Check-ins
+
+### Idee
+
+Jede Woche können (und sollen) beide Partner:innen unabhängig voneinander einen kurzen Check-in machen:  
+**"Wie gut hat die neue Aufgabenverteilung diese Woche funktioniert?"**
+
+### Ablauf
+
+1. Dashboard zeigt: "Check-in für diese Woche ausstehend"
+2. Jede Person geht durch die Aufgaben aus dem Umverteilungsplan
+3. Pro Aufgabe: **Hat das diese Woche funktioniert?**
+   - ✅ Ja
+   - ⚠️ Teilweise
+   - ❌ Nein / nicht passiert
+4. Optional: kurze Notiz (Freitext)
+5. Wenn beide eingecheckt haben: **gemeinsame Check-in-Auswertung** sichtbar
+
+### Check-in-Auswertung
+
+- Welche Aufgaben laufen gut?
+- Welche stocken noch? (Bei beiden oder nur bei einer Person anders wahrgenommen?)
+- Trend über Zeit: Fortschritts-Chart ("Woche 1 bis heute")
+
+### Erinnerung
+
+- Kein automatischer E-Mail-Versand in v1
+- Stattdessen: prominente Anzeige auf dem Dashboard ("Letzter Check-in: vor 9 Tagen")
+
+---
+
+## 8. Technisches Konzept
+
+### 8.1 Stack
 
 - **Backend + Frontend:** Django 5.x, Django Templates
-- **Datenbank:** SQLite (Entwicklung) → PostgreSQL (Produktion, optional)
-- **Styling:** CSS (Bootstrap oder Tailwind via CDN) — kein JS-Framework
+- **Datenbank:** SQLite (Entwicklung) → PostgreSQL (Produktion)
+- **Styling:** Bootstrap 5 via CDN
 - **Charts:** Chart.js via CDN
+- **Kein** separates JS-Framework
 
-### 7.2 Datenmodell (Entwurf)
+### 8.2 Datenmodell
 
 ```
 User (Django built-in)
-  └─ PaarSession
-        ├─ partner_a (FK User)
-        ├─ partner_b (FK User, nullable bis Beitritt)
-        ├─ invite_code
-        ├─ status: [offen, beide_fertig, ausgewertet]
-        └─ created_at
+
+PaarSession
+  ├─ partner_a (FK User)
+  ├─ partner_b (FK User, nullable bis Beitritt)
+  ├─ invite_code (unique, zufällig generiert)
+  ├─ invite_expires_at (DateTimeField)
+  ├─ status: [offen, test_laeuft, beide_fertig, plan_aktiv]
+  ├─ setup_kinder (bool)
+  ├─ setup_haustiere (bool)
+  └─ created_at
 
 Kategorie
   ├─ name
-  ├─ icon
+  ├─ icon (emoji oder CSS-Klasse)
+  ├─ ist_optional (bool)
   └─ reihenfolge
 
 Aufgabe
-  ├─ kategorie (FK)
+  ├─ kategorie (FK Kategorie, nullable für eigene Aufgaben)
   ├─ bezeichnung
-  ├─ optional (bool) – z.B. Kinderbetreuung
+  ├─ ist_standard (bool) – False = selbst erstellt vom Paar
+  ├─ paar_session (FK PaarSession, nullable für Standardaufgaben)
   └─ reihenfolge
+
+CHOICES = [ich, partner, beide, extern, trifft_nicht_zu]
 
 Antwort
   ├─ paar_session (FK)
   ├─ user (FK)
   ├─ aufgabe (FK)
-  ├─ management: [ich, partner, beide, extern, trifft_nicht_zu]
-  └─ ausfuehrung: [ich, partner, beide, extern, trifft_nicht_zu]
+  ├─ management (CHOICES)
+  └─ ausfuehrung (CHOICES)
+
+PLAN_CHOICES = [person_a, person_b, beide, extern, abschaffen]
 
 Umverteilung
   ├─ paar_session (FK)
   ├─ aufgabe (FK)
-  ├─ management_neu: [ich_a, ich_b, beide, extern, abschaffen]
-  └─ ausfuehrung_neu: [ich_a, ich_b, beide, extern, abschaffen]
+  ├─ management_neu (PLAN_CHOICES)
+  ├─ ausfuehrung_neu (PLAN_CHOICES)
+  ├─ signoff_a (bool, default False)
+  ├─ signoff_a_at (DateTimeField, nullable)
+  ├─ signoff_b (bool, default False)
+  └─ signoff_b_at (DateTimeField, nullable)
+
+CheckIn
+  ├─ paar_session (FK)
+  ├─ woche (DateField – Montag der jeweiligen Woche)
+  ├─ user (FK)
+  └─ abgeschlossen_at (DateTimeField)
+
+CheckInAntwort
+  ├─ checkin (FK CheckIn)
+  ├─ aufgabe (FK)
+  ├─ status: [ja, teilweise, nein]
+  └─ notiz (TextField, blank)
 ```
 
-### 7.3 URL-Struktur
+### 8.3 URL-Struktur
 
 ```
-/                      – Landing Page
-/registrieren/         – Registration
-/login/                – Login
-/paar/erstellen/       – Neues Paar + Einladecode
-/paar/beitreten/       – Einladecode eingeben
-/test/                 – Test durchführen (mit Fortschritt)
-/auswertung/           – Gemeinsame Auswertung (nur wenn beide fertig)
-/umverteilung/         – Umverteilungsplan bearbeiten
+/                           – Landing Page
+/registrieren/              – Registrierung
+/login/                     – Login
+/logout/                    – Logout
+/dashboard/                 – Übersicht (nach Login)
+
+/paar/erstellen/            – Neues Paar + Einladecode generieren
+/paar/beitreten/            – Einladecode eingeben
+/paar/setup/                – Optionale Kategorien wählen
+
+/test/                      – Test starten / fortsetzen
+/test/<kategorie_id>/       – Test: Aufgaben einer Kategorie
+
+/auswertung/                – Gemeinsame Auswertung
+/umverteilung/              – Umverteilungsplan bearbeiten
+/umverteilung/signoff/      – Plan unterzeichnen
+
+/checkin/                   – Wöchentlichen Check-in starten
+/checkin/auswertung/        – Gemeinsame Check-in-Auswertung
+/checkin/verlauf/           – Fortschrittsverlauf über Zeit
 ```
-
----
-
-## 8. Offene Fragen / Diskussionspunkte
-
-1. **Lizenz der Testfragen:** Eigenen Aufgabenkatalog erstellen oder bestehenden adaptieren?
-2. **Kinderbetreuung:** Als optionaler Bereich zu Beginn wählbar (je nach Lebenssituation)?
-3. **Anonym oder Account-basiert?** Accounts ermöglichen Rückschau und Wiederholung — aber erhöhen Hürde.
-4. **Sprache:** Erst nur Deutsch? Englisch später?
-5. **Umverteilungs-Sign-off:** Muss Plan von beiden bestätigt werden?
-6. **Re-Test:** Sollen Paare denselben Test nach 3/6 Monaten wiederholen können, um Fortschritt zu messen?
-7. **Mehrsprachige Kategorienamen:** Oder fix Deutsch?
 
 ---
 
 ## 9. Was ist NICHT der Scope (v1)
 
-- Keine Mobile App (responsive Web reicht)
-- Kein Echtzeit (kein WebSocket)
+- Keine Mobile App (responsives Web reicht)
+- Kein Echtzeit / WebSocket
 - Kein Chat / Kommentarfunktion
+- Keine E-Mail-Benachrichtigungen
 - Keine sozialen Features
 - Kein Abo / Bezahlmodell
+- Kein Mehrsprachigkeit (erst Deutsch)
 
 ---
 
-## 10. Nächste Schritte
+## 10. Implementierungs-Reihenfolge
 
-1. Konzept besprechen und finalisieren
-2. Aufgabenkatalog erstellen (ca. 30–40 Aufgaben)
-3. Datenmodell implementieren
-4. Auth + Pairing Flow
-5. Test-Flow
-6. Auswertungs-View + Charts
-7. Umverteilungsplan
+1. **Repo aufräumen** – altes `lifecalendar`-App entfernen, neue App `mentalload` anlegen
+2. **Datenmodell** – alle Models, Migrations, Admin
+3. **Auth-Flow** – Registrierung, Login, Logout
+4. **Pairing-Flow** – Paar erstellen, Einladecode, beitreten, Setup
+5. **Test-Flow** – Test durchführen (kategorieweise, Fortschritt speichern)
+6. **Auswertung** – Charts, Wahrnehmungslücken
+7. **Umverteilungsplan** – Bearbeiten + Sign-off
+8. **Wöchentliche Check-ins** – Check-in Flow + Verlaufsansicht
+9. **Polish** – Landing Page, Dashboard, responsive Design

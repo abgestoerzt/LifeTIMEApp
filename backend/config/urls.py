@@ -1,5 +1,8 @@
+from typing import cast
+
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.urls import include, path
@@ -7,7 +10,10 @@ from django.urls import include, path
 
 @login_required
 def dashboard(request: HttpRequest) -> HttpResponse:
-    return render(request, "dashboard.html")
+    from pairs.services import get_aktive_session
+
+    session = get_aktive_session(cast(User, request.user))
+    return render(request, "dashboard.html", {"paar_session": session})
 
 
 def landing(request: HttpRequest) -> HttpResponse:

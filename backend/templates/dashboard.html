@@ -1,32 +1,67 @@
 {% extends "base.html" %}
 {% block title %}Dashboard{% endblock %}
 {% block content %}
-<h1 class="mb-4">Hallo, {{ user.username }}!</h1>
 
-<div class="row g-4">
-  <div class="col-md-6">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body p-4">
-        <h5 class="card-title">Euer Paar</h5>
-        {% if paar_session %}
-          <p class="text-muted">{{ paar_session }}</p>
-          <p>Status: <strong>{{ paar_session.get_status_display }}</strong></p>
-          {% if paar_session.status == "offen" %}
-            <p>Einladecode: <code>{{ paar_session.invite_code }}</code></p>
-          {% elif paar_session.status == "test_laeuft" %}
-            <a href="{% url 'survey:start' %}" class="btn btn-dark">Test fortsetzen</a>
-          {% elif paar_session.status == "beide_fertig" %}
-            <a href="{% url 'results:auswertung' %}" class="btn btn-dark">Auswertung ansehen</a>
-          {% elif paar_session.status == "plan_aktiv" %}
-            <a href="{% url 'checkins:start' %}" class="btn btn-dark">Wöchentlicher Check-in</a>
-          {% endif %}
-        {% else %}
-          <p class="text-muted">Ihr seid noch kein Paar.</p>
-          <a href="{% url 'pairs:erstellen' %}" class="btn btn-dark me-2">Paar erstellen</a>
-          <a href="{% url 'pairs:beitreten' %}" class="btn btn-outline-dark">Einladecode eingeben</a>
-        {% endif %}
-      </div>
-    </div>
-  </div>
+<div class="mb-8">
+  <p class="text-gray-400 text-sm mb-1">Willkommen zurück</p>
+  <h1 class="text-2xl font-semibold text-dark">Hallo, {{ user.username }}!</h1>
 </div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+  <div class="card">
+    <h2 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Euer Paar</h2>
+    {% if paar_session %}
+      <p class="font-semibold text-dark mb-1">{{ paar_session }}</p>
+      <p class="text-sm text-gray-500 mb-4">
+        Status:
+        <span class="inline-flex items-center ml-1 px-2.5 py-0.5 rounded-full text-xs font-medium
+          {% if paar_session.status == 'plan_aktiv' %}bg-green/20 text-dark
+          {% elif paar_session.status == 'beide_fertig' %}bg-blue/30 text-dark
+          {% elif paar_session.status == 'test_laeuft' %}bg-cyan/30 text-dark
+          {% else %}bg-gray-100 text-gray-600{% endif %}">
+          {{ paar_session.get_status_display }}
+        </span>
+      </p>
+      {% if paar_session.status == "offen" %}
+        <p class="text-sm text-gray-500 mb-4">
+          Einladecode: <code class="bg-gray-100 px-2 py-0.5 rounded text-dark font-mono text-xs">{{ paar_session.invite_code }}</code>
+        </p>
+        <a href="{% url 'pairs:einladung' paar_session.pk %}" class="btn-secondary !text-xs">Code anzeigen</a>
+      {% elif paar_session.status == "test_laeuft" %}
+        <a href="{% url 'survey:start' %}" class="btn-primary">Test fortsetzen →</a>
+      {% elif paar_session.status == "beide_fertig" %}
+        <a href="{% url 'results:auswertung' %}" class="btn-primary">Auswertung ansehen →</a>
+      {% elif paar_session.status == "plan_aktiv" %}
+        <a href="{% url 'checkins:start' %}" class="btn-primary">Wöchentlicher Check-in →</a>
+      {% endif %}
+    {% else %}
+      <p class="text-sm text-gray-400 mb-5">Ihr seid noch kein Paar.</p>
+      <div class="flex gap-2 flex-wrap">
+        <a href="{% url 'pairs:erstellen' %}" class="btn-primary">Paar erstellen</a>
+        <a href="{% url 'pairs:beitreten' %}" class="btn-secondary">Einladecode eingeben</a>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if paar_session and paar_session.status != "offen" %}
+  <div class="card">
+    <h2 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">Navigation</h2>
+    <nav class="space-y-1.5">
+      <a href="{% url 'survey:start' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-600 hover:text-dark transition-colors">
+        <span class="text-base">📋</span> Test
+      </a>
+      <a href="{% url 'results:auswertung' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-600 hover:text-dark transition-colors">
+        <span class="text-base">📊</span> Auswertung
+      </a>
+      <a href="{% url 'plan:bearbeiten' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-600 hover:text-dark transition-colors">
+        <span class="text-base">🤝</span> Umverteilungsplan
+      </a>
+      <a href="{% url 'checkins:start' %}" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 text-sm text-gray-600 hover:text-dark transition-colors">
+        <span class="text-base">✅</span> Wöchentlicher Check-in
+      </a>
+    </nav>
+  </div>
+  {% endif %}
+</div>
+
 {% endblock %}

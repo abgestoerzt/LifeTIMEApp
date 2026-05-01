@@ -1,49 +1,63 @@
 {% extends "base.html" %}
 {% block title %}Umverteilungsplan{% endblock %}
 {% block content %}
-<h1 class="mb-1">Umverteilungsplan</h1>
-<p class="text-muted mb-4">Legt gemeinsam fest, wer künftig was übernimmt.</p>
+
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-dark mb-1">Umverteilungsplan</h1>
+  <p class="text-sm text-gray-400">Legt gemeinsam fest, wer künftig was übernimmt.</p>
+</div>
 
 {% if hat_signiert %}
-<div class="alert alert-success">Du hast den Plan bereits unterzeichnet. Warte auf deine Partner:in.</div>
+<div class="mb-5 flex items-center gap-3 p-4 rounded-xl bg-green/10 border border-green/30 text-sm text-dark">
+  <span class="text-green text-lg">✓</span>
+  Du hast den Plan bereits unterzeichnet. Warte auf deine Partner:in.
+</div>
 {% endif %}
 
 <form method="post">
   {% csrf_token %}
   {% regroup umverteilungen by aufgabe.kategorie as kategorien_liste %}
   {% for gruppe in kategorien_liste %}
-  <h5 class="mt-4 mb-2">{{ gruppe.grouper.icon }} {{ gruppe.grouper }}</h5>
-  {% for umv in gruppe.list %}
-  <div class="card border-0 shadow-sm mb-2">
-    <div class="card-body py-3 px-4">
-      <div class="row align-items-center g-2">
-        <div class="col-md-4 fw-semibold">{{ umv.aufgabe.bezeichnung }}</div>
-        <div class="col-md-4">
-          <label class="form-label text-muted small mb-1">🧠 Denken</label>
-          <select name="management_{{ umv.aufgabe.pk }}" class="form-select form-select-sm">
-            {% for val, label in choices %}
-              <option value="{{ val }}" {% if umv.management_neu == val %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="col-md-4">
-          <label class="form-label text-muted small mb-1">🙌 Ausführen</label>
-          <select name="ausfuehrung_{{ umv.aufgabe.pk }}" class="form-select form-select-sm">
-            {% for val, label in choices %}
-              <option value="{{ val }}" {% if umv.ausfuehrung_neu == val %}selected{% endif %}>{{ label }}</option>
-            {% endfor %}
-          </select>
+  <div class="mb-6">
+    <h2 class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3">
+      {{ gruppe.grouper.icon }} {{ gruppe.grouper }}
+    </h2>
+    <div class="space-y-2">
+      {% for umv in gruppe.list %}
+      <div class="card !p-4">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+          <p class="text-sm font-medium text-dark sm:flex-1">{{ umv.aufgabe.bezeichnung }}</p>
+          <div class="flex gap-2 flex-wrap sm:flex-nowrap">
+            <div class="flex-1 min-w-[140px]">
+              <label class="text-xs text-gray-400 block mb-1">🧠 Denken</label>
+              <select name="management_{{ umv.aufgabe.pk }}"
+                      class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple bg-white">
+                {% for val, label in choices %}
+                  <option value="{{ val }}" {% if umv.management_neu == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="flex-1 min-w-[140px]">
+              <label class="text-xs text-gray-400 block mb-1">🙌 Ausführen</label>
+              <select name="ausfuehrung_{{ umv.aufgabe.pk }}"
+                      class="w-full px-3 py-1.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-purple bg-white">
+                {% for val, label in choices %}
+                  <option value="{{ val }}" {% if umv.ausfuehrung_neu == val %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
         </div>
       </div>
+      {% endfor %}
     </div>
   </div>
   {% endfor %}
-  {% endfor %}
 
-  <div class="d-flex gap-3 mt-4 justify-content-between">
-    <button type="submit" class="btn btn-outline-dark">Änderungen speichern</button>
+  <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+    <button type="submit" class="btn-ghost">Änderungen speichern</button>
     {% if not hat_signiert %}
-    <button type="submit" form="signoff-form" class="btn btn-dark">Plan unterzeichnen ✓</button>
+    <button type="submit" form="signoff-form" class="btn-primary">Plan unterzeichnen ✓</button>
     {% endif %}
   </div>
 </form>
@@ -51,4 +65,5 @@
 <form id="signoff-form" method="post" action="{% url 'plan:signoff' %}">
   {% csrf_token %}
 </form>
+
 {% endblock %}

@@ -1,30 +1,32 @@
 {% extends "base.html" %}
 {% block title %}Paar erstellen{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-6">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body p-4">
-        <h2 class="mb-1">Paar erstellen</h2>
-        <p class="text-muted mb-4">Wähle aus, welche Lebensbereiche für euch relevant sind.</p>
-        <form method="post">
-          {% csrf_token %}
-          <div class="form-check mb-3">
-            {{ form.setup_kinder }}
-            <label class="form-check-label" for="{{ form.setup_kinder.id_for_label }}">
-              {{ form.setup_kinder.label }}
-            </label>
+<div class="max-w-md mx-auto mt-6">
+  <div class="card">
+    <h1 class="text-xl font-semibold text-dark mb-1">Paar erstellen</h1>
+    <p class="text-sm text-gray-400 mb-6">Wähle aus, welche Lebensbereiche für euch relevant sind.</p>
+    <form method="post">
+      {% csrf_token %}
+      <div class="space-y-3 mb-6">
+        <label class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-purple/50 cursor-pointer transition-colors has-[:checked]:border-purple has-[:checked]:bg-purple/5">
+          <input type="checkbox" name="{{ form.setup_kinder.html_name }}"
+                 class="mt-0.5 accent-purple" {% if form.setup_kinder.value %}checked{% endif %}>
+          <div>
+            <span class="text-sm font-medium text-dark">👶 Wir haben Kinder</span>
+            <p class="text-xs text-gray-400 mt-0.5">Kinderbetreuung einbeziehen</p>
           </div>
-          <div class="form-check mb-4">
-            {{ form.setup_haustiere }}
-            <label class="form-check-label" for="{{ form.setup_haustiere.id_for_label }}">
-              {{ form.setup_haustiere.label }}
-            </label>
+        </label>
+        <label class="flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-purple/50 cursor-pointer transition-colors has-[:checked]:border-purple has-[:checked]:bg-purple/5">
+          <input type="checkbox" name="{{ form.setup_haustiere.html_name }}"
+                 class="mt-0.5 accent-purple" {% if form.setup_haustiere.value %}checked{% endif %}>
+          <div>
+            <span class="text-sm font-medium text-dark">🐾 Wir haben Haustiere</span>
+            <p class="text-xs text-gray-400 mt-0.5">Haustierpflege einbeziehen</p>
           </div>
-          <button type="submit" class="btn btn-dark w-100">Paar erstellen & Einladecode generieren</button>
-        </form>
+        </label>
       </div>
-    </div>
+      <button type="submit" class="btn-primary w-full !py-3">Paar erstellen & Einladecode generieren</button>
+    </form>
   </div>
 </div>
 {% endblock %}

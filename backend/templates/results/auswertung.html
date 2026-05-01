@@ -1,36 +1,44 @@
+{% load static %}
 {% extends "base.html" %}
-{% block title %}Auswertung{% endblock %}
+{% block title %}Eure Auswertung{% endblock %}
 {% block extra_head %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-<h1 class="mb-1">Eure Auswertung</h1>
-<p class="text-muted mb-4">{{ partner_a.username }} &amp; {{ partner_b.username }}</p>
+
+<div class="mb-8">
+  <h1 class="text-2xl font-semibold text-dark mb-1">Eure Auswertung</h1>
+  <p class="text-sm text-gray-400">{{ partner_a.username }} &amp; {{ partner_b.username }}</p>
+</div>
 
 {% if gesamtverteilung %}
-<div class="row g-4 mb-5">
-  <div class="col-md-6">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body p-4">
-        <h5>🧠 Denken &amp; Organisieren</h5>
-        <canvas id="chartManagement" height="200"></canvas>
-        <div class="d-flex justify-content-around mt-3 text-center">
-          <div><div class="fw-bold fs-4">{{ gesamtverteilung.management.partner_a }}%</div><small>{{ partner_a.username }}</small></div>
-          <div><div class="fw-bold fs-4">{{ gesamtverteilung.management.partner_b }}%</div><small>{{ partner_b.username }}</small></div>
-        </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+  <div class="card text-center">
+    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">🧠 Denken &amp; Organisieren</p>
+    <canvas id="chartManagement" class="max-w-[200px] mx-auto mb-4"></canvas>
+    <div class="flex justify-around">
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.management.partner_a }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_a.username }}</p>
+      </div>
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.management.partner_b }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_b.username }}</p>
       </div>
     </div>
   </div>
-  <div class="col-md-6">
-    <div class="card border-0 shadow-sm h-100">
-      <div class="card-body p-4">
-        <h5>🙌 Ausführen</h5>
-        <canvas id="chartAusfuehrung" height="200"></canvas>
-        <div class="d-flex justify-content-around mt-3 text-center">
-          <div><div class="fw-bold fs-4">{{ gesamtverteilung.ausfuehrung.partner_a }}%</div><small>{{ partner_a.username }}</small></div>
-          <div><div class="fw-bold fs-4">{{ gesamtverteilung.ausfuehrung.partner_b }}%</div><small>{{ partner_b.username }}</small></div>
-        </div>
+  <div class="card text-center">
+    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">🙌 Ausführen</p>
+    <canvas id="chartAusfuehrung" class="max-w-[200px] mx-auto mb-4"></canvas>
+    <div class="flex justify-around">
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.ausfuehrung.partner_a }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_a.username }}</p>
+      </div>
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.ausfuehrung.partner_b }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_b.username }}</p>
       </div>
     </div>
   </div>
@@ -38,38 +46,32 @@
 {% endif %}
 
 {% if luecken %}
-<h4 class="mb-3">Auffälligkeiten</h4>
-<div class="table-responsive mb-5">
-  <table class="table table-sm align-middle">
-    <thead class="table-light">
-      <tr>
-        <th>Aufgabe</th>
-        <th>{{ partner_a.username }}</th>
-        <th>{{ partner_b.username }}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for l in luecken %}
-      <tr>
-        <td>{{ l.aufgabe }}</td>
-        <td><small>{{ l.antwort_a.get_management_display }}</small></td>
-        <td><small>{{ l.antwort_b.get_management_display }}</small></td>
-        <td>
-          {% if l.markierung == "konflikt" %}<span class="badge bg-warning text-dark">⚠️ Widerspruch</span>
-          {% elif l.markierung == "unsichtbar" %}<span class="badge bg-info text-dark">👁️ Unsichtbar</span>
-          {% elif l.markierung == "luecke" %}<span class="badge bg-secondary">❓ Lücke</span>
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="card mb-8">
+  <h2 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">Auffälligkeiten</h2>
+  <div class="divide-y divide-gray-100">
+    {% for l in luecken %}
+    <div class="py-3 flex items-center justify-between gap-4">
+      <p class="text-sm font-medium text-dark flex-1">{{ l.aufgabe }}</p>
+      <div class="flex items-center gap-3 text-xs text-gray-500">
+        <span>{{ partner_a.username }}: {{ l.antwort_a.get_management_display }}</span>
+        <span>{{ partner_b.username }}: {{ l.antwort_b.get_management_display }}</span>
+      </div>
+      <span class="flex-shrink-0 text-xs px-2.5 py-1 rounded-full font-medium
+        {% if l.markierung == 'konflikt' %}bg-yellow-100 text-yellow-800
+        {% elif l.markierung == 'unsichtbar' %}bg-cyan/30 text-dark
+        {% else %}bg-gray-100 text-gray-600{% endif %}">
+        {% if l.markierung == "konflikt" %}⚠️ Widerspruch
+        {% elif l.markierung == "unsichtbar" %}👁 Unsichtbar
+        {% else %}❓ Lücke{% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 {% endif %}
 
-<div class="text-center mt-4">
-  <a href="{% url 'plan:bearbeiten' %}" class="btn btn-dark btn-lg">Weiter: Aufgaben neu verteilen →</a>
+<div class="text-center">
+  <a href="{% url 'plan:bearbeiten' %}" class="btn-primary !px-8 !py-3 !text-base">Weiter: Aufgaben neu verteilen →</a>
 </div>
 
 {% endblock %}
@@ -81,9 +83,9 @@
       type: 'doughnut',
       data: {
         labels: [labelA, labelB],
-        datasets: [{ data: [a, b], backgroundColor: ['#212529', '#adb5bd'] }]
+        datasets: [{ data: [a, b], backgroundColor: ['#8377D1', '#8EF9F3'], borderWidth: 0 }]
       },
-      options: { plugins: { legend: { position: 'bottom' } }, cutout: '65%' }
+      options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 12 } } } }, cutout: '68%' }
     });
   }
   {% if gesamtverteilung %}

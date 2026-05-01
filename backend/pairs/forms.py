@@ -19,7 +19,7 @@ class BeitretenForm(forms.Form):
         label="Einladecode",
         widget=forms.TextInput(
             attrs={
-                "class": "form-control",
+                "class": "form-input",
                 "placeholder": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
             }
         ),

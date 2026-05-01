@@ -1,35 +1,33 @@
 {% extends "base.html" %}
 {% block title %}Anmelden{% endblock %}
 {% block content %}
-<div class="row justify-content-center">
-  <div class="col-md-5">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body p-4">
-        <h2 class="mb-4">Anmelden</h2>
-        <form method="post" novalidate>
-          {% csrf_token %}
-          {% for field in form %}
-            <div class="mb-3">
-              <label class="form-label fw-semibold">{{ field.label }}</label>
-              <input type="{{ field.field.widget.input_type }}"
-                     name="{{ field.html_name }}"
-                     class="form-control {% if field.errors %}is-invalid{% endif %}"
-                     {% if field.value %}value="{{ field.value }}"{% endif %}>
-              {% for error in field.errors %}
-                <div class="invalid-feedback">{{ error }}</div>
-              {% endfor %}
-            </div>
+<div class="max-w-sm mx-auto mt-6">
+  <div class="card">
+    <h1 class="text-xl font-semibold text-dark mb-6">Anmelden</h1>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-4">
+          <label class="form-label">{{ field.label }}</label>
+          <input type="{{ field.field.widget.input_type }}"
+                 name="{{ field.html_name }}"
+                 class="form-input {% if field.errors %}ring-2 ring-red-400 border-red-300{% endif %}"
+                 {% if field.value %}value="{{ field.value }}"{% endif %}>
+          {% for error in field.errors %}
+            <p class="mt-1.5 text-xs text-red-500">{{ error }}</p>
           {% endfor %}
-          {% if form.non_field_errors %}
-            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-          {% endif %}
-          <button type="submit" class="btn btn-dark w-100 mt-2">Anmelden</button>
-        </form>
-        <hr>
-        <p class="text-center text-muted small mb-0">
-          Noch kein Konto? <a href="{% url 'accounts:registrieren' %}">Registrieren</a>
+        </div>
+      {% endfor %}
+      {% if form.non_field_errors %}
+        <p class="mb-4 text-sm text-red-500 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5">
+          {{ form.non_field_errors }}
         </p>
-      </div>
+      {% endif %}
+      <button type="submit" class="btn-primary w-full !py-3 mt-2">Anmelden</button>
+    </form>
+    <div class="mt-5 pt-5 border-t border-gray-100 text-center text-sm text-gray-400">
+      Noch kein Konto?
+      <a href="{% url 'accounts:registrieren' %}" class="text-purple hover:opacity-75 ml-1">Registrieren</a>
     </div>
   </div>
 </div>

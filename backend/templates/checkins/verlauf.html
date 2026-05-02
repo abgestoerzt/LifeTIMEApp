@@ -1,0 +1,53 @@
+{% load static %}
+{% extends "base.html" %}
+{% block title %}Check-in Verlauf{% endblock %}
+{% block extra_head %}
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+{% endblock %}
+{% block content %}
+
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-dark mb-1">Verlauf</h1>
+  <p class="text-sm text-gray-400">Wie gut läuft der Plan über die Wochen?</p>
+</div>
+
+{% if verlauf %}
+<div class="card">
+  <canvas id="verlaufChart" height="120"></canvas>
+</div>
+{% else %}
+<div class="card text-center py-12">
+  <p class="text-gray-400 text-sm">Noch keine Check-in Daten vorhanden.</p>
+</div>
+{% endif %}
+
+<div class="mt-6">
+  <a href="{% url 'checkins:start' %}" class="btn-primary">Neuer Check-in</a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{% if verlauf %}
+<script>
+  const labels = [{% for v in verlauf %}"KW {{ v.woche|date:'W' }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+  const data = [{% for v in verlauf %}{% if v.anzahl_gesamt %}{{ v.anzahl_ja|floatformat:0 }}{% else %}0{% endif %}{% if not forloop.last %},{% endif %}{% endfor %}];
+  new Chart(document.getElementById('verlaufChart'), {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Aufgaben erledigt (Ja)',
+        data: data,
+        backgroundColor: '#8377D1',
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } }
+    }
+  });
+</script>
+{% endif %}
+{% endblock %}

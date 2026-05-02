@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Mental Load — gemeinsam fairer{% endblock %}
+{% block content %}
+
+<div class="text-center pt-10 pb-14">
+  <span class="inline-block px-3 py-1 rounded-full bg-purple/10 text-purple text-xs font-medium tracking-wide mb-6">
+    Für Paare
+  </span>
+  <h1 class="text-4xl sm:text-5xl font-semibold text-dark leading-tight mb-5">
+    Wer trägt die Last?
+  </h1>
+  <p class="text-gray-500 text-lg max-w-xl mx-auto leading-relaxed mb-10">
+    Mental Load ist die unsichtbare Arbeit des Organisierens, Planens und Im-Kopf-Behaltens.
+    Findet gemeinsam heraus, wie sie bei euch verteilt ist — und macht einen Plan für mehr Fairness.
+  </p>
+  <div class="flex items-center justify-center gap-3 flex-wrap">
+    <a href="{% url 'accounts:registrieren' %}" class="btn-primary !px-8 !py-3 !text-base">Jetzt starten</a>
+    <a href="{% url 'accounts:login' %}" class="btn-secondary !px-8 !py-3 !text-base">Anmelden</a>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+  <div class="card text-center">
+    <div class="text-3xl mb-4">📋</div>
+    <h3 class="font-semibold text-dark mb-2">Test machen</h3>
+    <p class="text-gray-500 text-sm leading-relaxed">
+      Beide Partner:innen beantworten den Test unabhängig voneinander — ehrlich und ohne Druck.
+    </p>
+  </div>
+  <div class="card text-center">
+    <div class="text-3xl mb-4">📊</div>
+    <h3 class="font-semibold text-dark mb-2">Auswertung sehen</h3>
+    <p class="text-gray-500 text-sm leading-relaxed">
+      Gemeinsame Auswertung zeigt, wo die Last ungleich verteilt ist — und wo ihr euch nicht einig seid.
+    </p>
+  </div>
+  <div class="card text-center">
+    <div class="text-3xl mb-4">🤝</div>
+    <h3 class="font-semibold text-dark mb-2">Plan vereinbaren</h3>
+    <p class="text-gray-500 text-sm leading-relaxed">
+      Verteilt Aufgaben neu, unterzeichnet den Plan gemeinsam und checkt jede Woche, wie es läuft.
+    </p>
+  </div>
+</div>
+
+{% endblock %}

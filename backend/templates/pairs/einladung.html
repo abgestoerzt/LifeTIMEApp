@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Einladung{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-6 text-center">
+  <div class="card">
+    <div class="text-4xl mb-4">🔗</div>
+    <h1 class="text-xl font-semibold text-dark mb-2">Einladecode</h1>
+    <p class="text-sm text-gray-400 mb-6">
+      Teile diesen Code mit deiner Partner:in. Er ist 7 Tage gültig.
+    </p>
+    <div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
+      <code class="text-dark font-mono text-sm break-all select-all">{{ session.invite_code }}</code>
+    </div>
+    <p class="text-xs text-gray-400 mb-6">
+      Deine Partner:in gibt diesen Code unter <strong class="text-dark">Einladecode eingeben</strong> ein.
+    </p>
+    <a href="{% url 'dashboard' %}" class="btn-secondary">Zum Dashboard</a>
+  </div>
+</div>
+{% endblock %}

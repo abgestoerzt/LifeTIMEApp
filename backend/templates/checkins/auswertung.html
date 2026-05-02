@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Check-in Auswertung{% endblock %}
+{% block content %}
+
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-dark mb-1">Check-in Auswertung</h1>
+  <p class="text-sm text-gray-400">Woche vom {{ woche|date:"d.m.Y" }}</p>
+</div>
+
+{% if not beide_fertig %}
+<div class="mb-5 flex items-center gap-3 p-4 rounded-xl bg-blue/20 border border-blue/30 text-sm text-dark">
+  <span class="text-xl">⏳</span>
+  Deine Partner:in hat noch nicht eingecheckt.
+</div>
+{% endif %}
+
+{% for item in antworten_pro_checkin %}
+<div class="card mb-4">
+  <h2 class="text-sm font-semibold text-dark mb-3">{{ item.checkin.user.username }}</h2>
+  <div class="divide-y divide-gray-100">
+    {% for a in item.antworten %}
+    <div class="py-2.5 flex items-center justify-between gap-3">
+      <p class="text-sm text-gray-600">{{ a.aufgabe.bezeichnung }}</p>
+      <span class="text-xs font-medium px-2.5 py-0.5 rounded-full flex-shrink-0
+        {% if a.status == 'ja' %}bg-green/20 text-dark
+        {% elif a.status == 'teilweise' %}bg-yellow-100 text-yellow-800
+        {% else %}bg-red-100 text-red-700{% endif %}">
+        {% if a.status == "ja" %}✅ Ja
+        {% elif a.status == "teilweise" %}⚠️ Teilweise
+        {% else %}❌ Nein{% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endfor %}
+
+<div class="flex gap-3 mt-6">
+  <a href="{% url 'checkins:verlauf' %}" class="btn-secondary">Verlauf ansehen</a>
+  <a href="{% url 'dashboard' %}" class="btn-ghost">Zum Dashboard</a>
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Mental Load Test{% endblock %}
+{% block content %}
+
+<div class="flex items-start justify-between mb-2">
+  <h1 class="text-2xl font-semibold text-dark">Mental Load Test</h1>
+  <span class="text-sm text-gray-400 mt-1.5">{{ fortschritt.beantwortet }} / {{ fortschritt.gesamt }} beantwortet</span>
+</div>
+
+<div class="w-full bg-gray-100 rounded-full h-1.5 mb-8">
+  {% if fortschritt.gesamt > 0 %}
+    {% widthratio fortschritt.beantwortet fortschritt.gesamt 100 as pct %}
+    <div class="bg-purple h-1.5 rounded-full transition-all" style="width: {{ pct }}%"></div>
+  {% endif %}
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+  {% for k in kategorien %}
+  <a href="{% url 'survey:kategorie' k.kategorie.pk %}" class="group">
+    <div class="card !p-4 flex items-center gap-4 hover:shadow-md transition-shadow
+                {% if k.komplett %}border-green/50 bg-green/5{% endif %}">
+      <span class="text-2xl">{{ k.kategorie.icon }}</span>
+      <div class="flex-1 min-w-0">
+        <p class="font-medium text-dark text-sm">{{ k.kategorie.name }}</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ k.anz_fertig }} / {{ k.anz_gesamt }} Aufgaben</p>
+      </div>
+      {% if k.komplett %}
+        <span class="text-green font-bold text-lg flex-shrink-0">✓</span>
+      {% else %}
+        <span class="text-gray-300 group-hover:text-purple transition-colors flex-shrink-0">›</span>
+      {% endif %}
+    </div>
+  </a>
+  {% endfor %}
+</div>
+
+{% if kann_abschliessen %}
+<div class="mt-8 text-center">
+  <form method="post" action="{% url 'survey:abschliessen' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn-primary !px-10 !py-3 !text-base">
+      Test abschließen ✓
+    </button>
+  </form>
+  <p class="text-xs text-gray-400 mt-3">Deine Antworten werden gespeichert.</p>
+</div>
+{% endif %}
+
+{% endblock %}

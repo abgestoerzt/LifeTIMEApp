@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Mental Load App{% endblock %}</title>
+  <script src="{% static 'js/tailwind.js' %}"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            green:  '#5EFC8D',
+            cyan:   '#8EF9F3',
+            blue:   '#93BEDF',
+            purple: '#8377D1',
+            dark:   '#6D5A72',
+          },
+          fontFamily: {
+            sans: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      body { @apply font-sans text-gray-800 bg-gray-50 antialiased; }
+    }
+    @layer components {
+      .btn-primary {
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-purple text-white font-medium text-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-purple focus:ring-offset-2;
+      }
+      .btn-secondary {
+        @apply inline-flex items-center justify-center px-5 py-2.5 rounded-xl border border-purple text-purple font-medium text-sm hover:bg-purple hover:text-white transition-colors focus:outline-none;
+      }
+      .btn-ghost {
+        @apply inline-flex items-center justify-center px-4 py-2 rounded-lg text-gray-500 text-sm hover:text-dark hover:bg-gray-100 transition-colors;
+      }
+      .card {
+        @apply bg-white rounded-2xl shadow-sm border border-gray-100 p-6;
+      }
+      .form-input {
+        @apply w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-purple focus:border-transparent transition-shadow;
+      }
+      .form-label {
+        @apply block text-sm font-medium text-dark mb-1.5;
+      }
+      .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+      }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <nav class="bg-dark border-b border-dark">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+      <a href="{% url 'landing' %}" class="text-white font-semibold tracking-tight text-base">
+        Mental Load
+      </a>
+      <div class="flex items-center gap-1">
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="text-white/70 hover:text-white text-sm px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors">Dashboard</a>
+          <a href="{% url 'accounts:logout' %}" class="text-white/70 hover:text-white text-sm px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors">Abmelden</a>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="text-white/70 hover:text-white text-sm px-3 py-1.5 rounded-lg hover:bg-white/10 transition-colors">Anmelden</a>
+          <a href="{% url 'accounts:registrieren' %}" class="ml-1 btn-primary !py-1.5 !text-xs">Registrieren</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
+    {% if messages %}
+      {% for message in messages %}
+        <div class="mb-6 px-4 py-3 rounded-xl text-sm
+          {% if message.tags == 'error' %}bg-red-50 text-red-700 border border-red-200
+          {% else %}bg-green/20 text-dark border border-green/40{% endif %}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="mt-20 py-6 border-t border-gray-100 text-center text-xs text-gray-400 tracking-wide">
+    Mental Load App &mdash; gemeinsam fairer.
+  </footer>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

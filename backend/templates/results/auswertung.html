@@ -1,0 +1,104 @@
+{% load static %}
+{% extends "base.html" %}
+{% block title %}Eure Auswertung{% endblock %}
+{% block extra_head %}
+<script src="{% static 'js/chart.umd.min.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+
+<div class="mb-8">
+  <h1 class="text-2xl font-semibold text-dark mb-1">Eure Auswertung</h1>
+  <p class="text-sm text-gray-400">{{ partner_a.username }} &amp; {{ partner_b.username }}</p>
+</div>
+
+{% if gesamtverteilung %}
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8">
+  <div class="card text-center">
+    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">🧠 Denken &amp; Organisieren</p>
+    <canvas id="chartManagement" class="max-w-[200px] mx-auto mb-4"></canvas>
+    <div class="flex justify-around">
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.management.partner_a }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_a.username }}</p>
+      </div>
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.management.partner_b }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_b.username }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="card text-center">
+    <p class="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">🙌 Ausführen</p>
+    <canvas id="chartAusfuehrung" class="max-w-[200px] mx-auto mb-4"></canvas>
+    <div class="flex justify-around">
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.ausfuehrung.partner_a }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_a.username }}</p>
+      </div>
+      <div>
+        <p class="text-2xl font-semibold text-dark">{{ gesamtverteilung.ausfuehrung.partner_b }}%</p>
+        <p class="text-xs text-gray-400 mt-0.5">{{ partner_b.username }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% if luecken %}
+<div class="card mb-8">
+  <h2 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">Auffälligkeiten</h2>
+  <div class="divide-y divide-gray-100">
+    {% for l in luecken %}
+    <div class="py-3 flex items-center justify-between gap-4">
+      <p class="text-sm font-medium text-dark flex-1">{{ l.aufgabe }}</p>
+      <div class="flex items-center gap-3 text-xs text-gray-500">
+        <span>{{ partner_a.username }}: {{ l.antwort_a.get_management_display }}</span>
+        <span>{{ partner_b.username }}: {{ l.antwort_b.get_management_display }}</span>
+      </div>
+      <span class="flex-shrink-0 text-xs px-2.5 py-1 rounded-full font-medium
+        {% if l.markierung == 'konflikt' %}bg-yellow-100 text-yellow-800
+        {% elif l.markierung == 'unsichtbar' %}bg-cyan/30 text-dark
+        {% else %}bg-gray-100 text-gray-600{% endif %}">
+        {% if l.markierung == "konflikt" %}⚠️ Widerspruch
+        {% elif l.markierung == "unsichtbar" %}👁 Unsichtbar
+        {% else %}❓ Lücke{% endif %}
+      </span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<div class="text-center">
+  <a href="{% url 'plan:bearbeiten' %}" class="btn-primary !px-8 !py-3 !text-base">Weiter: Aufgaben neu verteilen →</a>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function donut(id, a, b, labelA, labelB) {
+    new Chart(document.getElementById(id), {
+      type: 'doughnut',
+      data: {
+        labels: [labelA, labelB],
+        datasets: [{ data: [a, b], backgroundColor: ['#8377D1', '#8EF9F3'], borderWidth: 0 }]
+      },
+      options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 12 } } } }, cutout: '68%' }
+    });
+  }
+  {% if gesamtverteilung %}
+  donut('chartManagement',
+    {{ gesamtverteilung.management.partner_a }},
+    {{ gesamtverteilung.management.partner_b }},
+    '{{ partner_a.username }}', '{{ partner_b.username }}'
+  );
+  donut('chartAusfuehrung',
+    {{ gesamtverteilung.ausfuehrung.partner_a }},
+    {{ gesamtverteilung.ausfuehrung.partner_b }},
+    '{{ partner_a.username }}', '{{ partner_b.username }}'
+  );
+  {% endif %}
+</script>
+{% endblock %}

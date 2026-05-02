@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Konto erstellen{% endblock %}
+{% block content %}
+<div class="max-w-sm mx-auto mt-6">
+  <div class="card">
+    <h1 class="text-xl font-semibold text-dark mb-6">Konto erstellen</h1>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="mb-4">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% for error in field.errors %}
+            <p class="mt-1.5 text-xs text-red-500">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="btn-primary w-full !py-3 mt-2">Registrieren</button>
+    </form>
+    <div class="mt-5 pt-5 border-t border-gray-100 text-center text-sm text-gray-400">
+      Schon ein Konto?
+      <a href="{% url 'accounts:login' %}" class="text-purple hover:opacity-75 ml-1">Anmelden</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

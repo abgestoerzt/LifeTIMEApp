@@ -1,3 +1,4 @@
+import json
 from datetime import date
 from typing import cast
 
@@ -85,5 +86,6 @@ def verlauf(request: HttpRequest) -> HttpResponse:
         "checkins/verlauf.html",
         {
             "verlauf": verlauf_daten,
+            "chart_verlauf_json": json.dumps(services.prepare_verlauf_chart_data(session)),
         },
     )

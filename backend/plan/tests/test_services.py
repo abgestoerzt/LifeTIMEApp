@@ -3,7 +3,13 @@ from django.contrib.auth.models import User
 from pairs.models import PaarSession
 from pairs.services import paar_beitreten, paar_erstellen
 
-from plan.services import get_oder_erstelle_plan, hat_signiert, signoff_setzen
+from plan.models import Umverteilung
+from plan.services import (
+    get_oder_erstelle_plan,
+    hat_signiert,
+    plan_speichern,
+    signoff_setzen,
+)
 
 
 @pytest.fixture
@@ -53,3 +59,69 @@ def test_signoff_setzt_hat_signiert_true(session: PaarSession, user_a: User) -> 
     get_oder_erstelle_plan(session)
     signoff_setzen(session, user_a)
     assert hat_signiert(session, user_a) is True
+
+
+@pytest.mark.django_db
+def test_get_oder_erstelle_plan_idempotent(session: PaarSession) -> None:
+    get_oder_erstelle_plan(session)
+    get_oder_erstelle_plan(session)
+    count = Umverteilung.objects.filter(paar_session=session).count()
+    assert count == Umverteilung.objects.filter(paar_session=session).count()
+
+
+@pytest.mark.django_db
+def test_plan_speichern_aktualisiert_werte(
+    session: PaarSession, user_a: User
+) -> None:
+    umverteilungen = get_oder_erstelle_plan(session)
+    erste = umverteilungen[0]
+    daten = {
+        f"management_{erste.aufgabe_id}": "person_a",
+        f"ausfuehrung_{erste.aufgabe_id}": "person_b",
+    }
+    plan_speichern(session, daten)
+    erste.refresh_from_db()
+    assert erste.management_neu == "person_a"
+    assert erste.ausfuehrung_neu == "person_b"
+
+
+@pytest.mark.django_db
+def test_plan_speichern_setzt_signoffs_zurueck(
+    session: PaarSession, user_a: User, user_b: User
+) -> None:
+    umverteilungen = get_oder_erstelle_plan(session)
+    signoff_setzen(session, user_a)
+    signoff_setzen(session, user_b)
+    erste = umverteilungen[0]
+    erste.refresh_from_db()
+    assert erste.signoff_a is True
+    daten = {
+        f"management_{erste.aufgabe_id}": "person_a",
+        f"ausfuehrung_{erste.aufgabe_id}": "person_b",
+    }
+    plan_speichern(session, daten)
+    erste.refresh_from_db()
+    assert erste.signoff_a is False
+    assert erste.signoff_b is False
+
+
+@pytest.mark.django_db
+def test_beide_signiert_gibt_true_wenn_beide_signiert(session: PaarSession) -> None:
+    umverteilungen = get_oder_erstelle_plan(session)
+    umv = umverteilungen[0]
+    assert umv.beide_signiert() is False
+    umv.signoff_a = True
+    umv.signoff_b = True
+    umv.save()
+    umv.refresh_from_db()
+    assert umv.beide_signiert() is True
+
+
+@pytest.mark.django_db
+def test_signoff_nur_einer_aktiviert_nicht(
+    session: PaarSession, user_a: User
+) -> None:
+    get_oder_erstelle_plan(session)
+    signoff_setzen(session, user_a)
+    session.refresh_from_db()
+    assert session.status == PaarSession.Status.BEIDE_FERTIG

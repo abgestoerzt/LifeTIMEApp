@@ -1,5 +1,6 @@
 from typing import cast
 
+from catalog.forms import AufgabeErstellenForm
 from catalog.models import Aufgabe, Kategorie
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -49,6 +50,9 @@ def start(request: HttpRequest) -> HttpResponse:
         )
 
     kann_abschliessen = services.ist_fertig(session, user)
+    eigene_aufgaben = Aufgabe.objects.filter(
+        paar_session=session, ist_standard=False
+    ).select_related("erstellt_von")
     return render(
         request,
         "survey/start.html",
@@ -57,6 +61,9 @@ def start(request: HttpRequest) -> HttpResponse:
             "kategorien": kategorien_mit_fortschritt,
             "fortschritt": fortschritt,
             "kann_abschliessen": kann_abschliessen,
+            "eigene_aufgaben": eigene_aufgaben,
+            "beantwortet_ids": beantwortet_ids,
+            "erstellen_form": AufgabeErstellenForm(),
         },
     )
 

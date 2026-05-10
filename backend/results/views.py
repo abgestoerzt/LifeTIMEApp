@@ -1,3 +1,4 @@
+import json
 from typing import cast
 
 from django.contrib.auth.decorators import login_required
@@ -33,5 +34,7 @@ def auswertung(request: HttpRequest) -> HttpResponse:
             "luecken": luecken,
             "partner_a": session.partner_a,
             "partner_b": session.partner_b,
+            "chart_gesamt_json": json.dumps(services.prepare_gesamt_chart_data(session)),
+            "chart_kategorien_json": json.dumps(services.prepare_kategorie_chart_data(session)),
         },
     )

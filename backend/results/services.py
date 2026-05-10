@@ -2,6 +2,50 @@ from pairs.models import PaarSession
 from survey.models import Antwort, AntwortChoices
 
 
+def prepare_gesamt_chart_data(paar_session: PaarSession) -> dict:
+    label_a = paar_session.partner_a.get_short_name() or paar_session.partner_a.username
+    label_b = ""
+    if paar_session.partner_b:
+        label_b = paar_session.partner_b.get_short_name() or paar_session.partner_b.username
+
+    verteilung = berechne_gesamtverteilung(paar_session)
+
+    def _to_person_pair(dim: dict) -> dict:
+        a, b = dim.get("partner_a", 0), dim.get("partner_b", 0)
+        if a == 0 and b == 0:
+            return {"person_a": 50.0, "person_b": 50.0}
+        return {"person_a": a, "person_b": b}
+
+    if not verteilung:
+        return {
+            "management": {"person_a": 50.0, "person_b": 50.0},
+            "ausfuehrung": {"person_a": 50.0, "person_b": 50.0},
+            "label_a": label_a,
+            "label_b": label_b,
+        }
+    return {
+        "management": _to_person_pair(verteilung["management"]),
+        "ausfuehrung": _to_person_pair(verteilung["ausfuehrung"]),
+        "label_a": label_a,
+        "label_b": label_b,
+    }
+
+
+def prepare_kategorie_chart_data(paar_session: PaarSession) -> list[dict]:
+    kategorien = berechne_kategorie_verteilung(paar_session)
+    result = [
+        {
+            "kategorie": k["kategorie"].name,
+            "icon": k["kategorie"].icon,
+            "person_a": k["management_a"],
+            "person_b": k["management_b"],
+            "imbalance": round(abs(k["management_a"] - k["management_b"]), 1),
+        }
+        for k in kategorien
+    ]
+    return sorted(result, key=lambda x: x["imbalance"], reverse=True)
+
+
 def berechne_gesamtverteilung(session: PaarSession) -> dict[str, dict[str, float]]:
     """Berechnet den prozentualen Anteil am Mental Load pro Partner:in."""
     user_a = session.partner_a

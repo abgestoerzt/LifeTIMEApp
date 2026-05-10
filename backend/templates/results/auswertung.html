@@ -1,9 +1,12 @@
-{% load static %}
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Eure Auswertung{% endblock %}
 {% block extra_head %}
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
 {% endblock %}
+
+{{ chart_gesamt_json|json_script:"chart-gesamt-data" }}
+{{ chart_kategorien_json|json_script:"chart-kategorien-data" }}
 
 {% block content %}
 
@@ -45,6 +48,13 @@
 </div>
 {% endif %}
 
+{% if kategorien %}
+<div class="card mb-8">
+  <h2 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">Verteilung nach Kategorie</h2>
+  <canvas id="chartKategorien"></canvas>
+</div>
+{% endif %}
+
 {% if luecken %}
 <div class="card mb-8">
   <h2 class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">Auffälligkeiten</h2>
@@ -78,27 +88,88 @@
 
 {% block extra_js %}
 <script>
+  const gestamtData = JSON.parse(document.getElementById("chart-gesamt-data").textContent);
+
+  const centerTextPlugin = {
+    id: "centerText",
+    afterDraw(chart) {
+      const { ctx, chartArea: { width, height, left, top } } = chart;
+      const d = chart.data.datasets[0].data;
+      const max = Math.max(...d);
+      ctx.save();
+      ctx.font = "bold 1.5rem sans-serif";
+      ctx.fillStyle = "#1e293b";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(max + "%", left + width / 2, top + height / 2);
+      ctx.restore();
+    }
+  };
+
   function donut(id, a, b, labelA, labelB) {
     new Chart(document.getElementById(id), {
-      type: 'doughnut',
+      type: "doughnut",
       data: {
         labels: [labelA, labelB],
-        datasets: [{ data: [a, b], backgroundColor: ['#8377D1', '#8EF9F3'], borderWidth: 0 }]
+        datasets: [{ data: [a, b], backgroundColor: ["#7C3AED", "#10B981"], borderWidth: 0 }]
       },
-      options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 12 } } } }, cutout: '68%' }
+      options: {
+        cutout: "65%",
+        plugins: {
+          legend: { position: "bottom", labels: { boxWidth: 10, padding: 12, font: { size: 12 } } }
+        }
+      },
+      plugins: [centerTextPlugin]
     });
   }
-  {% if gesamtverteilung %}
-  donut('chartManagement',
-    {{ gesamtverteilung.management.partner_a }},
-    {{ gesamtverteilung.management.partner_b }},
-    '{{ partner_a.username }}', '{{ partner_b.username }}'
+
+  donut(
+    "chartManagement",
+    gestamtData.management.person_a,
+    gestamtData.management.person_b,
+    gestamtData.label_a,
+    gestamtData.label_b
   );
-  donut('chartAusfuehrung',
-    {{ gesamtverteilung.ausfuehrung.partner_a }},
-    {{ gesamtverteilung.ausfuehrung.partner_b }},
-    '{{ partner_a.username }}', '{{ partner_b.username }}'
+  donut(
+    "chartAusfuehrung",
+    gestamtData.ausfuehrung.person_a,
+    gestamtData.ausfuehrung.person_b,
+    gestamtData.label_a,
+    gestamtData.label_b
   );
-  {% endif %}
+
+  const kategorienData = JSON.parse(document.getElementById("chart-kategorien-data").textContent);
+  if (kategorienData.length > 0) {
+    new Chart(document.getElementById("chartKategorien"), {
+      type: "bar",
+      data: {
+        labels: kategorienData.map(k => k.icon + " " + k.kategorie),
+        datasets: [
+          {
+            label: gestamtData.label_a,
+            data: kategorienData.map(k => k.person_a),
+            backgroundColor: "#7C3AED",
+            borderRadius: 4
+          },
+          {
+            label: gestamtData.label_b,
+            data: kategorienData.map(k => k.person_b),
+            backgroundColor: "#10B981",
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        indexAxis: "y",
+        scales: {
+          x: { max: 100, ticks: { callback: v => v + "%" } },
+          y: { grid: { display: false } }
+        },
+        plugins: {
+          legend: { position: "bottom", labels: { boxWidth: 10, padding: 12, font: { size: 12 } } }
+        }
+      }
+    });
+  }
 </script>
 {% endblock %}

@@ -1,9 +1,12 @@
-{% load static %}
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Check-in Verlauf{% endblock %}
 {% block extra_head %}
 <script src="{% static 'js/chart.umd.min.js' %}"></script>
 {% endblock %}
+
+{{ chart_verlauf_json|json_script:"chart-verlauf-data" }}
+
 {% block content %}
 
 <div class="mb-6">
@@ -13,7 +16,7 @@
 
 {% if verlauf %}
 <div class="card">
-  <canvas id="verlaufChart" height="120"></canvas>
+  <canvas id="verlaufChart"></canvas>
 </div>
 {% else %}
 <div class="card text-center py-12">
@@ -30,22 +33,55 @@
 {% block extra_js %}
 {% if verlauf %}
 <script>
-  const labels = [{% for v in verlauf %}"KW {{ v.woche|date:'W' }}"{% if not forloop.last %},{% endif %}{% endfor %}];
-  const data = [{% for v in verlauf %}{% if v.anzahl_gesamt %}{{ v.anzahl_ja|floatformat:0 }}{% else %}0{% endif %}{% if not forloop.last %},{% endif %}{% endfor %}];
-  new Chart(document.getElementById('verlaufChart'), {
-    type: 'bar',
+  const verlaufData = JSON.parse(document.getElementById("chart-verlauf-data").textContent);
+
+  function kwLabel(dateStr) {
+    const d = new Date(dateStr);
+    const startOfYear = new Date(d.getFullYear(), 0, 1);
+    const week = Math.ceil(((d - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+    return "KW " + String(week).padStart(2, "0");
+  }
+
+  new Chart(document.getElementById("verlaufChart"), {
+    type: "line",
     data: {
-      labels: labels,
-      datasets: [{
-        label: 'Aufgaben erledigt (Ja)',
-        data: data,
-        backgroundColor: '#8377D1',
-        borderRadius: 6,
-      }]
+      labels: verlaufData.wochen.map(kwLabel),
+      datasets: [
+        {
+          label: verlaufData.label_a || "Person A",
+          data: verlaufData.person_a,
+          borderColor: "#7C3AED",
+          backgroundColor: "#7C3AED33",
+          tension: 0.3,
+          spanGaps: false,
+          fill: false,
+          pointRadius: 4
+        },
+        {
+          label: verlaufData.label_b || "Person B",
+          data: verlaufData.person_b,
+          borderColor: "#10B981",
+          backgroundColor: "#10B98133",
+          tension: 0.3,
+          spanGaps: false,
+          fill: false,
+          pointRadius: 4
+        }
+      ]
     },
     options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' } }, x: { grid: { display: false } } }
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          ticks: { callback: v => v + "%" },
+          title: { display: true, text: "% erledigt" }
+        },
+        x: { grid: { display: false } }
+      },
+      plugins: {
+        legend: { position: "bottom", labels: { boxWidth: 10, padding: 12, font: { size: 12 } } }
+      }
     }
   });
 </script>

@@ -34,6 +34,33 @@
   {% endfor %}
 </div>
 
+<div class="mt-8">
+  <h2 class="text-base font-semibold text-dark mb-3">✏️ Eigene Aufgaben</h2>
+
+  {% if eigene_aufgaben %}
+  <ul class="mb-4 space-y-2">
+    {% for aufgabe in eigene_aufgaben %}
+    <li class="flex items-center justify-between card !p-3">
+      <span class="text-sm text-dark">{{ aufgabe.bezeichnung }}</span>
+      {% if aufgabe.erstellt_von == request.user and aufgabe.pk not in beantwortet_ids %}
+      <form method="post" action="{% url 'catalog:aufgabe_loeschen' aufgabe.pk %}">
+        {% csrf_token %}
+        <button type="submit" class="text-gray-400 hover:text-red-400 transition-colors text-xs ml-4" title="Aufgabe löschen">✕</button>
+      </form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <form method="post" action="{% url 'catalog:aufgabe_erstellen' %}" class="flex gap-2">
+    {% csrf_token %}
+    <input type="text" name="bezeichnung" maxlength="200" placeholder="z.B. Gemüsegarten pflegen"
+           class="flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:border-purple">
+    <button type="submit" class="btn-primary !py-2 !px-4 !text-sm whitespace-nowrap">+ Hinzufügen</button>
+  </form>
+</div>
+
 {% if kann_abschliessen %}
 <div class="mt-8 text-center">
   <form method="post" action="{% url 'survey:abschliessen' %}">
